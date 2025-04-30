@@ -210,7 +210,7 @@ namespace Orb.API.Controllers
         {
             var sellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var product = await _context.Products
-                .Where(p => p.SellerId == sellerId && p.Id == id)
+                .Where(p => p.Shop.SellerId == sellerId && p.Id == id)
                 .FirstOrDefaultAsync();
 
             if (product == null)
@@ -234,7 +234,7 @@ namespace Orb.API.Controllers
                 Description = productDto.Description,
                 Price = productDto.Price,
                 StockQuantity = productDto.StockQuantity,
-                SellerId = sellerId
+               
             };
 
             _context.Products.Add(product);
@@ -246,13 +246,15 @@ namespace Orb.API.Controllers
         [HttpGet]
         [Authorize(Policy = "RequireSellerRole")]
         [Tags("Seller")]
-        public async Task<ActionResult<IEnumerable<Product>>> GetSellerProducts()
+        public async Task<ActionResult<IEnumerable<Product>>> GetSellerProducts(Guid id)
         {
             var sellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             
+            //check if the product belongs to the seller's shop
             var products = await _context.Products
-                .Where(p => p.SellerId == sellerId)
-                .ToListAsync();
+                .Include(p => p.Shop)
+                .Where(p => p.Shop.SellerId == sellerId && p.Id == id)
+                .FirstOrDefaultAsync();
                 
             return Ok(products);
         }

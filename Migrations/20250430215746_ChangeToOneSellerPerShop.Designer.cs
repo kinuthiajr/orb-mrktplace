@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Orb.API;
@@ -11,9 +12,11 @@ using Orb.API;
 namespace Orb.API.Migrations
 {
     [DbContext(typeof(OrbDbContext))]
-    partial class OrbDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250430215746_ChangeToOneSellerPerShop")]
+    partial class ChangeToOneSellerPerShop
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

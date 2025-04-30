@@ -27,8 +27,8 @@ namespace Orb.API
 
             builder.Entity<Shop>()
                 .HasOne(s => s.Seller)
-                .WithMany(u => u.Shops)
-                .HasForeignKey(s => s.SellerId)
+                .WithOne(u => u.Shop)
+                .HasForeignKey<Shop>(s => s.SellerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
 

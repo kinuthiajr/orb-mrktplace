@@ -23,7 +23,8 @@ namespace Orb.API.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-        // Foreign key to seller
+
+        // Foreign key to seller one-one rship
         [Required]
         public string SellerId { get; set; }
         

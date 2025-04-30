@@ -17,7 +17,10 @@ namespace Orb.API.Models
         //Customer properties
         public string? ShippingAddress {get; set;}
 
-        public ICollection<Shop> Shops { get; set; }
+
+        // One-one rhip
+        public Shop Shop {get; set;}
+        public Guid? ShopId {get; set;}
     }
 
     public enum UserType

@@ -26,10 +26,6 @@ namespace Orb.API.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-        
-        // Foreign key to seller
-        [Required]
-        public string SellerId { get; set; }
 
         // Foreign key to shop
         [Required]

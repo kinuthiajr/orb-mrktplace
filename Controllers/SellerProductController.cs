@@ -68,16 +68,18 @@ namespace Orb.API.Controllers
             return product;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Product>> CreateProduct(Guid shopId, ProductDto productDto)
+        [HttpPost("create")]
+        public async Task<ActionResult<Product>> CreateProduct(ProductDto productDto)
         {
+            
             var sellerID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
             var shop = await _context.Shops.FirstOrDefaultAsync(shp => 
-            shp.Id == shopId && shp.SellerId == sellerID); //Verify the shop belongs to the seller
+            shp.SellerId == sellerID); //Get seller shop
 
             if (shop == null)
             {
-                return NotFound("Shop not found or you don't have access to it");
+                return BadRequest("You need to create a shop first before adding products.");
             }
 
             var product = new Product
@@ -86,15 +88,14 @@ namespace Orb.API.Controllers
                 Description = productDto.Description,
                 Price = productDto.Price,
                 StockQuantity = productDto.StockQuantity,
-                ShopId = shopId
+                ShopId = shop.Id
             };
 
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetProduct), 
-            new { shopId = shopId, id = product.Id }, product);
-
+            new {id = product.Id }, product);
 
         }
     }

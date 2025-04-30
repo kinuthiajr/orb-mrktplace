@@ -54,7 +54,6 @@ namespace Orb.API.Controllers
                 Location = shop.Location,
                 Products = shop.Products.Select(p => new ProductDto
                 {
-                    Id = p.Id,
                     Name = p.Name,
                     Description = p.Description,
                     Price = p.Price,
@@ -71,6 +70,16 @@ namespace Orb.API.Controllers
             public async Task<ActionResult<ShopDto>> CreateShop(CreateShopDto shopDto)
             {
                 var sellerID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                // Check if seller already has a shop
+                var existingShop = await _context.Shops
+                .FirstOrDefaultAsync(shp => shp.SellerId == sellerID);
+
+                if (existingShop != null)
+                {
+                    return BadRequest("You already have a shop");
+                }
+
                 var shop = new Shop
                 {
                     Name = shopDto.Name,
@@ -81,16 +90,24 @@ namespace Orb.API.Controllers
                 _context.Shops.Add(shop);
                 await _context.SaveChangesAsync();
 
+                //Update seller ShopId
+                var seller = await _context.Users.FindAsync(sellerID);
+                if (seller != null)
+                {
+                    seller.ShopId = shop.Id;
+                    await _context.SaveChangesAsync();
+                }
+
                 return CreatedAtAction(
                nameof(GetShop),
                 // This would be a named route you define
                 new { id = shop.Id },
                 new ShopDto
                 {
-                    
-                    Name = shopDto.Name,
-                    Description = shopDto.Description,
-                    Location = shopDto.Location,
+                    Id = shop.Id,
+                    Name = shop.Name,
+                    Description = shop.Description,
+                    Location = shop.Location,
                     
                 });
 
