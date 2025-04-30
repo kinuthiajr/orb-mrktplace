@@ -150,3 +150,4 @@ C:\Users\smk\dotnet-project\orb-auth\Orb.API\bin\Debug\net9.0\Microsoft.Identity
 C:\Users\smk\dotnet-project\orb-auth\Orb.API\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\smk\dotnet-project\orb-auth\Orb.API\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\smk\dotnet-project\orb-auth\Orb.API\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\smk\dotnet-project\orb-auth\Orb.API\obj\Debug\net9.0\Orb.API.sourcelink.json

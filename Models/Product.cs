@@ -30,10 +30,15 @@ namespace Orb.API.Models
         // Foreign key to seller
         [Required]
         public string SellerId { get; set; }
+
+        // Foreign key to shop
+        [Required]
+        public Guid ShopId { get; set; }
         
-        // Navigation property
-        [ForeignKey("SellerId")]
-        public ApplicationUser Seller { get; set; }
+        // Navigation property to shop
+        [ForeignKey("ShopId")]
+        public Shop Shop { get; set; }
+        
     }
     
 }

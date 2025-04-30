@@ -19,16 +19,24 @@ namespace Orb.API
         public DbSet<Product> Products {get; set;}
         public DbSet<Order> Orders {get; set;}
         public DbSet<OrderItem> OrderItems {get; set;}
+        public DbSet<Shop> Shops {get; set;}
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<Product>()
-            .HasOne(p => p.Seller)
-                .WithMany()
-                .HasForeignKey(p => p.SellerId)
+            builder.Entity<Shop>()
+                .HasOne(s => s.Seller)
+                .WithMany(u => u.Shops)
+                .HasForeignKey(s => s.SellerId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+
+            builder.Entity<Product>()
+                .HasOne(p => p.Shop)
+                .WithMany(s => s.Products)
+                .HasForeignKey(p => p.ShopId)
+                .OnDelete(DeleteBehavior.Cascade);
             
             builder.Entity<Order>()
                 .HasOne(o => o.Customer)
@@ -42,12 +50,7 @@ namespace Orb.API
                 .HasForeignKey(o => o.SellerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Order>()
-                .HasOne(o => o.Seller)
-                .WithMany()
-                .HasForeignKey(o => o.SellerId)
-                .OnDelete(DeleteBehavior.Restrict);
-
+        
             builder.Entity<OrderItem>()
                 .HasOne(oi => oi.Product)
                 .WithMany()

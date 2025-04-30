@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Orb.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5a0b19bcbcd18e7e98a0f74c1014a71ab2e1f9a1")]
 [assembly: System.Reflection.AssemblyProductAttribute("Orb.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Orb.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
