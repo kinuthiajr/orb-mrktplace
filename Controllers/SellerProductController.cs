@@ -12,7 +12,7 @@ using Orb.API.Models;
 namespace Orb.API.Controllers
 {
     [ApiController]
-    [Route("api/shops/{shopId}/products")]
+    [Route("api/seller/products")]
     [Tags("Seller")]
     [Authorize(Policy = "RequireSellerRole")]
     public class SellerProductController : ControllerBase
@@ -24,52 +24,50 @@ namespace Orb.API.Controllers
         }   
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetShopProducts(Guid shopId)
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetSellerProducts()
         {
             var sellerID = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var shopProducts = await _context.Shops.FirstOrDefaultAsync(shp =>
-                shp.Id == shopId && shp.SellerId == sellerID
-            );
-
-            if (shopProducts == null)
+            var shopProducts = await _context.Products
+            .Include(shp => shp.Shop)
+            .Where(p => p.Shop.SellerId == sellerID)
+            .Select(p => new ProductDto
             {
-                return NotFound("Shop not found or you don't have access to it");
-            }
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                StockQuantity = p.StockQuantity,
+            }).ToListAsync();
 
-            var products = await _context.Products.Where(p => p.ShopId == shopId)
-            .ToListAsync();
-
-            return Ok(products);
+            return Ok(shopProducts);
         }
         
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(Guid shopId, Guid id)
+        public async Task<ActionResult<ProductDto>> GetSellerProduct(Guid id)
         {
             var sellerID = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var shop = await _context.Shops.FirstOrDefaultAsync(shp => 
-            shp.Id == shopId && shp.SellerId == sellerID);
-
-            if (shop == null)
-            {
-                return NotFound("Shop not found or you don't have access to it");
-            }
-
             var product = await _context.Products
-            .Where(p => p.ShopId == shopId && p.Id == id)
-            .FirstOrDefaultAsync();
+            .Include(shp => shp.Shop)
+            .FirstOrDefaultAsync(p => p.Id == id
+            && p.Shop.SellerId == sellerID);
 
             if (product == null)
             {
-                return NotFound("Product not found");
+                return NotFound("Product not found or you don't have access to it");
             }
 
-            return product;
+            return new ProductDto
+            {
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                StockQuantity = product.StockQuantity,  
+            };
         }
 
-        [HttpPost("create")]
-        public async Task<ActionResult<Product>> CreateProduct(ProductDto productDto)
+        [HttpPost]
+        public async Task<ActionResult<ProductDto>> CreateProduct(ProductDto productDto)
         {
             
             var sellerID = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -94,8 +92,17 @@ namespace Orb.API.Controllers
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetProduct), 
-            new {id = product.Id }, product);
+            var productResponse = new ProductDto
+            {
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                StockQuantity = product.StockQuantity,
+            };
+            
+
+            return CreatedAtAction(nameof(GetSellerProduct), 
+            new {id = product.Id }, productResponse);
 
         }
     }

@@ -124,89 +124,89 @@ var sellerGroup = app.MapGroup("api/sellers")
     .RequireAuthorization("RequireSellerRole");
 
 
-sellerGroup.MapGet("shop", async (OrbDbContext db, ClaimsPrincipal user) => {
-    var sellerId = user.FindFirstValue(ClaimTypes.NameIdentifier);
-    return await db.Shops.FirstOrDefaultAsync(s => s.SellerId == sellerId);
-});
+// sellerGroup.MapGet("shop", async (OrbDbContext db, ClaimsPrincipal user) => {
+//     var sellerId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+//     return await db.Shops.FirstOrDefaultAsync(s => s.SellerId == sellerId);
+// });
 
-sellerGroup.MapPost("products", async (OrbDbContext db, ClaimsPrincipal user, ProductDto productDto) => {
-    var sellerId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+// sellerGroup.MapPost("products", async (OrbDbContext db, ClaimsPrincipal user, ProductDto productDto) => {
+//     var sellerId = user.FindFirstValue(ClaimTypes.NameIdentifier);
     
-    // Get the seller's shop
-    var shop = await db.Shops.FirstOrDefaultAsync(s => s.SellerId == sellerId);
+//     // Get the seller's shop
+//     var shop = await db.Shops.FirstOrDefaultAsync(s => s.SellerId == sellerId);
     
-    if (shop == null)
-    {
-        return Results.BadRequest("You need to create a shop first before adding products.");
-    }
+//     if (shop == null)
+//     {
+//         return Results.BadRequest("You need to create a shop first before adding products.");
+//     }
     
-    var product = new Product
-    {
-        Name = productDto.Name,
-        Description = productDto.Description,
-        Price = productDto.Price,
-        StockQuantity = productDto.StockQuantity,
-        ShopId = shop.Id
-    };
+//     var product = new Product
+//     {
+//         Name = productDto.Name,
+//         Description = productDto.Description,
+//         Price = productDto.Price,
+//         StockQuantity = productDto.StockQuantity,
+//         ShopId = shop.Id
+//     };
     
-    db.Products.Add(product);
-    await db.SaveChangesAsync();
+//     db.Products.Add(product);
+//     await db.SaveChangesAsync();
     
-    return Results.Created($"/api/seller/products/{product.Id}", new {
-        Id = product.Id,
-        Name = product.Name,
-        Description = product.Description,
-        Price = product.Price,
-        StockQuantity = product.StockQuantity,
-        ShopId = shop.Id,
-        ShopName = shop.Name
-    });
-});
+//     return Results.Created($"/api/seller/products/{product.Id}", new {
+//         Id = product.Id,
+//         Name = product.Name,
+//         Description = product.Description,
+//         Price = product.Price,
+//         StockQuantity = product.StockQuantity,
+//         ShopId = shop.Id,
+//         ShopName = shop.Name
+//     });
+// });
 
-// Add a GET endpoint to retrieve a specific product
-sellerGroup.MapGet("products/{id}", async (OrbDbContext db, ClaimsPrincipal user, Guid id) => {
-    var sellerId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+// // Add a GET endpoint to retrieve a specific product
+// sellerGroup.MapGet("products/{id}", async (OrbDbContext db, ClaimsPrincipal user, Guid id) => {
+//     var sellerId = user.FindFirstValue(ClaimTypes.NameIdentifier);
     
-    var product = await db.Products
-        .Include(p => p.Shop)
-        .FirstOrDefaultAsync(p => p.Id == id && p.Shop.SellerId == sellerId);
+//     var product = await db.Products
+//         .Include(p => p.Shop)
+//         .FirstOrDefaultAsync(p => p.Id == id && p.Shop.SellerId == sellerId);
         
-    if (product == null)
-    {
-        return Results.NotFound();
-    }
+//     if (product == null)
+//     {
+//         return Results.NotFound();
+//     }
     
-    return Results.Ok(new {
-        Id = product.Id,
-        Name = product.Name,
-        Description = product.Description,
-        Price = product.Price,
-        StockQuantity = product.StockQuantity,
-        ShopId = product.ShopId,
-        ShopName = product.Shop.Name
-    });
-});
+//     return Results.Ok(new {
+//         Id = product.Id,
+//         Name = product.Name,
+//         Description = product.Description,
+//         Price = product.Price,
+//         StockQuantity = product.StockQuantity,
+//         ShopId = product.ShopId,
+//         ShopName = product.Shop.Name
+//     });
+// });
 
-// Add a GET endpoint to list all products for the seller
-sellerGroup.MapGet("products", async (OrbDbContext db, ClaimsPrincipal user) => {
-    var sellerId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+// // Add a GET endpoint to list all products for the seller
+// sellerGroup.MapGet("products", async (OrbDbContext db, ClaimsPrincipal user) => {
+//     var sellerId = user.FindFirstValue(ClaimTypes.NameIdentifier);
     
-    var products = await db.Products
-        .Include(p => p.Shop)
-        .Where(p => p.Shop.SellerId == sellerId)
-        .Select(p => new {
-            Id = p.Id,
-            Name = p.Name,
-            Description = p.Description,
-            Price = p.Price,
-            StockQuantity = p.StockQuantity,
-            ShopId = p.ShopId,
-            ShopName = p.Shop.Name
-        })
-        .ToListAsync();
+//     var products = await db.Products
+//         .Include(p => p.Shop)
+//         .Where(p => p.Shop.SellerId == sellerId)
+//         .Select(p => new {
+//             Id = p.Id,
+//             Name = p.Name,
+//             Description = p.Description,
+//             Price = p.Price,
+//             StockQuantity = p.StockQuantity,
+//             ShopId = p.ShopId,
+//             ShopName = p.Shop.Name
+//         })
+//         .ToListAsync();
         
-    return Results.Ok(products);
-});
+//     return Results.Ok(products);
+// });
 
 
 var commonGroup = app.MapGroup("api/common")

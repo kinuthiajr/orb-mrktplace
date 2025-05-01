@@ -54,6 +54,7 @@ namespace Orb.API.Controllers
                 Location = shop.Location,
                 Products = shop.Products.Select(p => new ProductDto
                 {
+                   
                     Name = p.Name,
                     Description = p.Description,
                     Price = p.Price,
