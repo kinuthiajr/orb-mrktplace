@@ -328,12 +328,12 @@ namespace Orb.API.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("SellerId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<Guid>("ShopId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("StockQuantity")
                         .HasColumnType("integer");
@@ -370,6 +370,10 @@ namespace Orb.API.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("SellerId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Slug")
                         .IsRequired()
                         .HasColumnType("text");
 

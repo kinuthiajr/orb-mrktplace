@@ -12,8 +12,8 @@ using Orb.API;
 namespace Orb.API.Migrations
 {
     [DbContext(typeof(OrbDbContext))]
-    [Migration("20250430215220_ChangeToOneShopPerSeller")]
-    partial class ChangeToOneShopPerSeller
+    [Migration("20250502081304_AddSlugToShop")]
+    partial class AddSlugToShop
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -331,12 +331,12 @@ namespace Orb.API.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("SellerId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<Guid>("ShopId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("StockQuantity")
                         .HasColumnType("integer");
@@ -373,6 +373,10 @@ namespace Orb.API.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("SellerId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Slug")
                         .IsRequired()
                         .HasColumnType("text");
 

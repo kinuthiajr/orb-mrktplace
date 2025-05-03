@@ -12,7 +12,8 @@ namespace Orb.API.DTO
         
         public required string Description { get; set; }
 
-        public required string Location {get; set;}   
+        public required string Location {get; set;} 
+        public required string Slug {get; set;}
     }
 
     public class CreateShopDto

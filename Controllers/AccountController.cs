@@ -221,27 +221,6 @@ namespace Orb.API.Controllers
             return product;
         }
 
-        // [HttpPost]
-        // [Authorize(Policy = "RequireSellerRole")]
-        // [Tags("Seller")]
-        // public async Task<ActionResult<Product>> CreateProduct(ProductCreateDto productDto)
-        // {
-        //     var sellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            
-        //     var product = new Product
-        //     {
-        //         Name = productDto.Name,
-        //         Description = productDto.Description,
-        //         Price = productDto.Price,
-        //         StockQuantity = productDto.StockQuantity,
-               
-        //     };
-
-        //     _context.Products.Add(product);
-        //     await _context.SaveChangesAsync();
-
-        //     return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
-        // }
 
         [HttpGet]
         [Authorize(Policy = "RequireSellerRole")]

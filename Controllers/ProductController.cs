@@ -30,13 +30,14 @@ namespace Orb.API.Controllers
                 Description = p.Description,
                 Price = p.Price,
                 StockQuantity = p.StockQuantity,
-                // ShopName = p.Shop.Name
+                ShopName = p.Shop.Name,
+                Slug = p.Shop.Slug,
             }).ToListAsync();
             return Ok(products);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ProductDto>> GetProduct(Guid id)
+        [HttpGet("{id:guid}")]
+        public async Task<ActionResult<ProductDto>> GetProductById(Guid id)
         {
             var product = await _context.Products
             .Include(p => p.Shop)
@@ -52,14 +53,17 @@ namespace Orb.API.Controllers
                 Name = product.Name,
                 Description = product.Description,
                 Price = product.Price,
-                StockQuantity = product.StockQuantity
+                StockQuantity = product.StockQuantity,
+                ShopName = product.Shop.Name,
+                Slug = product.Slug
             };
 
             return Ok(product);
         }
 
         [HttpGet("shop/{shopId}")]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> GetProductsByShop(Guid shopId)
+        public async Task<ActionResult<IEnumerable<ProductDto>>> 
+        GetProductsByShop(Guid shopId)
         {
             var shop = await _context.Shops.FindAsync(shopId);
             if (shop == null)
@@ -79,10 +83,64 @@ namespace Orb.API.Controllers
 
             return Ok(products);
         }
-        
+
+        [HttpGet("{slug}")]
+        public async Task<ActionResult<ProductDto>> GetProductBySlug(string slug)
+        {
+            if (Guid.TryParse(slug, out var id))
+            {
+                return await GetProductById(id);
+            }
+
+            var product = await _context.Products
+            .Include(shp => shp.Shop)
+            .FirstOrDefaultAsync(p => p.Slug == slug);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            var productDto = new ProductDto
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                StockQuantity = product.StockQuantity,
+                ShopName = product.Shop.Name,
+                Slug = product.Slug
+            };
+
+            return Ok(productDto);
+        }   
 
 
+        [HttpGet("shop/{shopId:guid}")]
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetProductsByShopId(Guid shopId)
+        {
+            var shop = await _context.Shops.FindAsync(shopId);
+            if (shop == null)
+            {
+                return NotFound("No shop found ");
+            }
 
+            var products = await _context.Products
+            .Where(p => p.ShopId == shopId)
+            .Select(p => new ProductDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                StockQuantity = p.StockQuantity,
+                ShopId = p.ShopId,
+                ShopName = shop.Name,
+                Slug = p.Slug 
+            }).ToListAsync();
+
+            return Ok(products);
+        }
 
     }
 }

@@ -15,9 +15,13 @@ namespace Orb.API.DTO
 
     public class ProductDto
     {
+        public Guid Id {get;set;}
         public required string Name { get; set; }
         public string Description { get; set; }
         public required decimal Price { get; set; }
         public required int StockQuantity { get; set; }
+        public string Slug { get; set; }
+        public Guid ShopId {get;set;}
+        public string ShopName {get;set;}
     }
 }
