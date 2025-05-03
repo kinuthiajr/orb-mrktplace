@@ -24,7 +24,10 @@ namespace Orb.API.Models
         public int StockQuantity { get; set; }
 
         [Required]
-        public string Slug {get; set;}
+        public string ProductSlug {get; set;}
+
+        [NotMapped]
+        public string FullSlug => $"{Shop?.ShopSlug}/{ProductSlug}";
         
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         

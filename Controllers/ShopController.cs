@@ -34,7 +34,7 @@ namespace Orb.API.Controllers
                 Name = shp.Name,
                 Description = shp.Description,
                 Location = shp.Location,
-                Slug = shp.Slug,
+                ShopSlug = shp.ShopSlug,
             }).ToListAsync();
             return shops;
         }
@@ -61,7 +61,7 @@ namespace Orb.API.Controllers
             {
                 var shop = await _context.Shops
                 .Include(shp => shp.Products)
-                .FirstOrDefaultAsync(shp => shp.Slug ==  slug);
+                .FirstOrDefaultAsync(shp => shp.ShopSlug ==  slug);
 
                 if (shop == null)
                 {
@@ -91,7 +91,7 @@ namespace Orb.API.Controllers
 
                 string slug = GenerateSlug(shopDto.Name); //Generate slug from name
 
-                var slugExists = await _context.Shops.AnyAsync(s => s.Slug == slug);
+                var slugExists = await _context.Shops.AnyAsync(s => s.ShopSlug == slug);
                 if (slugExists)
                 {
                     slug = $"{slug}-{Guid.NewGuid().ToString().Substring(0, 8)}";
@@ -103,7 +103,7 @@ namespace Orb.API.Controllers
                     Description = shopDto.Description,
                     Location = shopDto.Location,
                     SellerId = sellerID,
-                    Slug = slug
+                    ShopSlug = slug
                 };
                 _context.Shops.Add(shop);
                 await _context.SaveChangesAsync();
@@ -118,15 +118,15 @@ namespace Orb.API.Controllers
 
                 return CreatedAtAction(
                nameof(GetShopBySlug),
-                // This would be a named route you define
-                new { slug = shop.Slug},
+                // This would be a named route defined
+                new { slug = shop.ShopSlug},
                 new ShopDto
                 {
                     Id = shop.Id,
                     Name = shop.Name,
                     Description = shop.Description,
                     Location = shop.Location,
-                    Slug = shop.Slug
+                    ShopSlug = shop.ShopSlug
                 });
 
             }
@@ -135,7 +135,7 @@ namespace Orb.API.Controllers
             public async Task<ActionResult<IEnumerable<ProductDto>>> GetShopProducts(string slug)
             {
                 var shop = await _context.Shops
-                .FirstOrDefaultAsync(shp => shp.Slug == slug);
+                .FirstOrDefaultAsync(shp => shp.ShopSlug == slug);
 
                 if (shop == null)
                 {
@@ -163,7 +163,7 @@ namespace Orb.API.Controllers
                     Name = shop.Name,
                     Description = shop.Description,
                     Location = shop.Location,
-                    Slug = shop.Slug,
+                    ShopSlug = shop.ShopSlug,
                     Products = shop.Products.Select(p => new ProductDto
                     {
                         

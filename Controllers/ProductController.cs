@@ -26,12 +26,14 @@ namespace Orb.API.Controllers
             .Include(shp => shp.Shop)
             .Select(p => new ProductDto
             {
+                Id = p.Id,
                 Name = p.Name,
                 Description = p.Description,
                 Price = p.Price,
                 StockQuantity = p.StockQuantity,
                 ShopName = p.Shop.Name,
-                Slug = p.Shop.Slug,
+                ProductSlug = p.Shop.ShopSlug,
+                FullSlug = p.Shop.ShopSlug + "/" + p.ProductSlug
             }).ToListAsync();
             return Ok(products);
         }
@@ -55,7 +57,7 @@ namespace Orb.API.Controllers
                 Price = product.Price,
                 StockQuantity = product.StockQuantity,
                 ShopName = product.Shop.Name,
-                Slug = product.Slug
+                ProductSlug = product.ProductSlug
             };
 
             return Ok(product);
@@ -94,7 +96,7 @@ namespace Orb.API.Controllers
 
             var product = await _context.Products
             .Include(shp => shp.Shop)
-            .FirstOrDefaultAsync(p => p.Slug == slug);
+            .FirstOrDefaultAsync(p => p.ProductSlug == slug);
 
             if (product == null)
             {
@@ -109,7 +111,7 @@ namespace Orb.API.Controllers
                 Price = product.Price,
                 StockQuantity = product.StockQuantity,
                 ShopName = product.Shop.Name,
-                Slug = product.Slug
+                ProductSlug = product.ProductSlug
             };
 
             return Ok(productDto);
@@ -136,10 +138,49 @@ namespace Orb.API.Controllers
                 StockQuantity = p.StockQuantity,
                 ShopId = p.ShopId,
                 ShopName = shop.Name,
-                Slug = p.Slug 
+                ProductSlug = p.ProductSlug 
             }).ToListAsync();
 
             return Ok(products);
+        }
+
+        // Combined slug for shop and product
+        [HttpGet("by-path/{*fullpath}")]
+        public async Task<ActionResult<ProductDto>> GetProductByFullPath(string fullPath)
+        {
+            var pathParts = fullPath.Split("/");
+
+            if (pathParts.Length != 2)
+            {
+                return BadRequest
+                ("Invalid path format. Expected format: {shopSlug}/{productSlug}");
+            }
+
+            var shopSlug = pathParts[0];
+            var productSlug = pathParts[1];
+
+            var product = await _context.Products
+            .Include(shp => shp.Shop)
+            .FirstOrDefaultAsync(p => p.Shop.ShopSlug == shopSlug && p.ProductSlug == productSlug);
+
+             if (product == null)
+            {
+                return NotFound("Product not found");
+            }
+
+            return Ok(new ProductDto
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                StockQuantity = product.StockQuantity,
+                ShopName = product.Shop.Name,
+                ProductSlug = product.ProductSlug,
+                FullSlug = $"{product.Shop.ShopSlug}/{product.ProductSlug}"
+            });
+
+            
         }
 
     }

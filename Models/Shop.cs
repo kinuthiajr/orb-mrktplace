@@ -22,7 +22,7 @@ namespace Orb.API.Models
         public required string Location {get; set;}
 
         [Required]
-        public string Slug {get; set;}
+        public string ShopSlug {get; set;}
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

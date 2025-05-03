@@ -203,41 +203,41 @@ namespace Orb.API.Controllers
 
         //---------------Product section ---------------//
 
-         [HttpGet("{id}")]
-         [Authorize(Policy = "RequireSellerRole")]
-        [Tags("Seller")]
-        public async Task<ActionResult<Product>> GetProduct(Guid id)
-        {
-            var sellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var product = await _context.Products
-                .Where(p => p.Shop.SellerId == sellerId && p.Id == id)
-                .FirstOrDefaultAsync();
+    //      [HttpGet("{id}")]
+    //      [Authorize(Policy = "RequireSellerRole")]
+    //     [Tags("Seller")]
+    //     public async Task<ActionResult<Product>> GetProduct(Guid id)
+    //     {
+    //         var sellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    //         var product = await _context.Products
+    //             .Where(p => p.Shop.SellerId == sellerId && p.Id == id)
+    //             .FirstOrDefaultAsync();
 
-            if (product == null)
-            {
-                return NotFound();
-            }
+    //         if (product == null)
+    //         {
+    //             return NotFound();
+    //         }
 
-            return product;
-        }
+    //         return product;
+    //     }
 
 
-        [HttpGet]
-        [Authorize(Policy = "RequireSellerRole")]
-        [Tags("Seller")]
-        public async Task<ActionResult<IEnumerable<Product>>> GetSellerProducts(Guid id)
-        {
-            var sellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    //     [HttpGet]
+    //     [Authorize(Policy = "RequireSellerRole")]
+    //     [Tags("Seller")]
+    //     public async Task<ActionResult<IEnumerable<Product>>> GetSellerProducts(Guid id)
+    //     {
+    //         var sellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             
-            //check if the product belongs to the seller's shop
-            var products = await _context.Products
-                .Include(p => p.Shop)
-                .Where(p => p.Shop.SellerId == sellerId && p.Id == id)
-                .FirstOrDefaultAsync();
+    //         //check if the product belongs to the seller's shop
+    //         var products = await _context.Products
+    //             .Include(p => p.Shop)
+    //             .Where(p => p.Shop.SellerId == sellerId && p.Id == id)
+    //             .FirstOrDefaultAsync();
                 
-            return Ok(products);
-        }
-    }
+    //         return Ok(products);
+    //     }
+    // }
 
     public class CustomerRegisterModel
     {
@@ -279,5 +279,6 @@ namespace Orb.API.Controllers
             public string ShopDescription { get; set; }
             public DateTime Expiration { get; set; }
         }
-        
+    } 
+
 }

@@ -40,7 +40,7 @@ namespace Orb.API.Controllers
                 StockQuantity = p.StockQuantity,
                 ShopId = p.ShopId,
                 ShopName = p.Shop.Name,
-                Slug = p.Shop.Slug
+                ProductSlug = p.Shop.ShopSlug
             }).ToListAsync();
 
             return Ok(shopProducts);
@@ -69,7 +69,7 @@ namespace Orb.API.Controllers
                 Price = product.Price,
                 StockQuantity = product.StockQuantity, 
                 ShopName = product.Shop.Name,
-                Slug = product.Shop.Slug,
+                ProductSlug = product.Shop.ShopSlug,
                 ShopId = product.Shop.Id,
             };
         }
@@ -90,15 +90,15 @@ namespace Orb.API.Controllers
 
             //generate slug from product name 
             string baseSlug = GenerateSlug(productDto.Name);
-            string slug = baseSlug;
+            string productSlug = baseSlug;
 
             //check slug already in the shop
             int counter = 1;
             while(await _context.Products.AnyAsync(p => p.ShopId == shop.Id 
-            && p.Slug == slug))
+            && p.ProductSlug == productSlug))
             {
                 //append counter to slug
-                slug = $"{baseSlug}-{counter}";
+                productSlug = $"{baseSlug}-{counter}";
                 counter++;
             }
 
@@ -108,7 +108,7 @@ namespace Orb.API.Controllers
                 Description = productDto.Description,
                 Price = productDto.Price,
                 StockQuantity = productDto.StockQuantity,
-                Slug = slug,
+                ProductSlug = productSlug,
                 ShopId = shop.Id,
                 
             };
@@ -124,9 +124,9 @@ namespace Orb.API.Controllers
                 Price = product.Price,
                 StockQuantity = product.StockQuantity,
                 ShopName = shop.Name,
-                Slug = product.Slug,
-                ShopId = product.ShopId
-                
+                ProductSlug = product.ProductSlug,
+                ShopId = product.ShopId,
+                FullSlug = $"{shop.ShopSlug}/{product.ProductSlug}"
             };
             
 

@@ -20,7 +20,8 @@ namespace Orb.API.DTO
         public string Description { get; set; }
         public required decimal Price { get; set; }
         public required int StockQuantity { get; set; }
-        public string Slug { get; set; }
+        public string ProductSlug { get; set; }
+        public string FullSlug {get; set;}
         public Guid ShopId {get;set;}
         public string ShopName {get;set;}
     }
