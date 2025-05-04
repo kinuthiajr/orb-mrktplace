@@ -30,4 +30,36 @@ namespace Orb.API.DTO
     {
         public List<ProductDto> Products {get; set;}
     }
+
+    public class ShopProfileDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Location { get; set; }
+        public string ShopSlug { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public SellerBasicInfoDto Seller { get; set; }
+        public List<ProductDto> FeaturedProducts { get; set; }
+        public int TotalProducts { get; set; }
+    }
+
+    public class SellerProfileDto
+    {
+        public string Id { get; set; }
+        public string Email { get; set; }
+        public string ShopName { get; set; }
+        public string ShopDescription { get; set; }
+        public DateTime JoinedDate { get; set; }
+        public ShopProfileDto Shop { get; set; }
+        public int TotalProducts { get; set; }
+        
+    }
+
+    public class SellerBasicInfoDto
+    {
+        public string Id { get; set; }
+        public string Email { get; set; }
+        public string ShopName { get; set; }
+    }
 }
