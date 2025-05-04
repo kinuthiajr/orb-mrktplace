@@ -50,7 +50,7 @@ namespace Orb.API.Controllers
                 Id = seller.Id,
                 Email = seller.Email,
                 ShopName = seller.ShopName,
-                // ShopDescription = seller.Description,
+                ShopDescription = seller.ShopDescription,
                 // JoinedDate = seller.CreatedAt,
                 TotalProducts = totalProducts,
                 Shop = shop == null ? null :new ShopProfileDto
@@ -64,6 +64,46 @@ namespace Orb.API.Controllers
             };
 
         }
+
+        
+        [HttpGet]
+        public async Task<ActionResult<ShopDetailDto>> GetMyShop()
+        {
+            var sellerID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var shop = await _context.Shops
+            .Include(shp => shp.Products)
+            .FirstOrDefaultAsync(shp => shp.SellerId == sellerID);
+            if (shop == null)
+            {
+                return NotFound("You dont have a shop");
+            }
+
+            var shopDetail = new ShopDetailDto
+            {
+                Id = shop.Id,
+                Name = shop.Name,
+                Description = shop.Description,
+                Location = shop.Location,
+                ShopSlug = shop.ShopSlug,
+                Products = shop.Products.Select(p => new ProductDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    Price = p.Price,
+                    StockQuantity = p.StockQuantity,
+                    ProductSlug = p.ProductSlug,
+                    ShopId = p.ShopId,
+                    FullSlug = p.FullSlug,
+                    ShopName = p.Shop.Name,
+                }).ToList()
+            };
+
+            return shopDetail;
+
+        }
+            
 
 
     }
